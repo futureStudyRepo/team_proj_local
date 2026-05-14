@@ -9,9 +9,10 @@ jobs:
     runs-on: self-hosted
     steps:
       - uses: actions/checkout@v4
-      - run: |
+      - name: Deploy
+        run: |
           source ~/miniconda3/etc/profile.d/conda.sh
           conda activate bio4
           pip install -r requirements.txt
           tmux kill-session -t myapp 2>/dev/null || true
-          tmux new-session -d -s myapp ~/start_app.sh
+          RUNNER_TRACKING_ID="" setsid tmux new-session -d -s myapp "bash -c 'source ~/miniconda3/etc/profile.d/conda.sh && conda activate bio4 && python main.py > app.log 2>&1'"
